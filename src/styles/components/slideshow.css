@@ -1,0 +1,11 @@
+.images-nav-button div {
+  background: #fff;
+}
+
+.images-nav-button.active div {
+  background: #5599ff;
+}
+
+.images-nav-button:not(.active):active div {
+  background: #ccc;
+}
