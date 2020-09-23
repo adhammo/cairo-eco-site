@@ -1,0 +1,29 @@
+.nav-item > .nav-link {
+  border-bottom: 2px solid #202020;
+}
+
+.nav-item:last-of-type > .nav-link {
+  border-bottom: 0;
+}
+
+.nav-link {
+  color: #fff;
+}
+
+.nav-link:hover {
+  color: #5599ff;
+}
+
+.nav-link:focus {
+  color: #5599ff;
+}
+
+.menu-close {
+  background-color: #5599ff;
+}
+
+.menu-close:hover,
+.menu-close:active,
+.menu-close:focus  {
+  background-color: #93beff;
+}
