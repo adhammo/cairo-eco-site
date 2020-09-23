@@ -39,7 +39,7 @@ const Logo = () => (
     >
       Cairo University
       <br />
-      Eco-Racing Team
+      Eco Team
     </h1>
   </Link>
 )
