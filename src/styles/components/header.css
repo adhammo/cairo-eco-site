@@ -1,0 +1,26 @@
+.header-content {
+  justify-content: space-between;
+}
+
+.menu-open {
+  position: relative;
+  background-color: #5599ff;
+}
+
+.menu-open:hover,
+.menu-open:active,
+.menu-open:focus {
+  background-color: #93beff;
+}
+
+@media only screen and (max-width: 768px) {
+  .header-content {
+    justify-content: center;
+  }
+
+  .menu-open {
+    position: absolute;
+    right: 0.5rem;
+    top: 0.5rem;
+  }
+}
