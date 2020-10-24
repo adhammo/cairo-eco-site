@@ -3,6 +3,7 @@ module.exports = {
     title: `Cairo University Eco-Racing Team`,
     description: `Keep up with the latest news about Cairo university eco-racing team competing in Shell Eco-marathon competition.`,
     author: `@cu-eco-team`,
+    siteUrl: `https://cairoecoteam.netlify.app/`,
   },
   plugins: [
     {
@@ -13,6 +14,8 @@ module.exports = {
       },
     },
     `gatsby-plugin-react-helmet`,
+    `gatsby-plugin-sitemap`,
+    `gatsby-plugin-robots-txt`,
     `gatsby-plugin-layout`,
     {
       resolve: `gatsby-plugin-sharp`,
