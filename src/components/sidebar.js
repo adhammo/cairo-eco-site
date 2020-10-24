@@ -23,12 +23,14 @@ class Sidebar extends Component {
   componentWillUnmount() {
     if (this.state.active) {
       document.removeEventListener("keydown", this.listenForEscape)
-      document.removeEventListener("backbutton", this.closeSidebar)
+      document.removeEventListener("backbutton", this.listenForBackbutton)
     }
 
     if (this.state.dragging) {
       document.removeEventListener("mouseup", this.stopDrag)
       document.removeEventListener("mousemove", this.drag)
+      document.removeEventListener("touchend", this.stopDragTouch)
+      document.removeEventListener("touchmove", this.dragTouch)
       if (this.context.data.blockView) {
         this.context.set({
           blockView: false,
@@ -41,7 +43,7 @@ class Sidebar extends Component {
     if (this.context.data.sidebarActive) {
       if (!this.state.active) {
         document.addEventListener("keydown", this.listenForEscape)
-        document.addEventListener("backbutton", this.closeSidebar)
+        document.addEventListener("backbutton", this.listenForBackbutton)
         this.setState({
           active: true,
         })
@@ -49,7 +51,7 @@ class Sidebar extends Component {
     } else {
       if (this.state.active) {
         document.removeEventListener("keydown", this.listenForEscape)
-        document.removeEventListener("backbutton", this.closeSidebar)
+        document.removeEventListener("backbutton", this.listenForBackbutton)
         this.setState({
           active: false,
         })
@@ -66,7 +68,15 @@ class Sidebar extends Component {
   }
 
   listenForEscape = event => {
-    if (event.keyCode === 27) this.closeSidebar()
+    if (event.keyCode === 27) {
+      event.preventDefault()
+      this.closeSidebar()
+    }
+  }
+
+  listenForBackbutton = event => {
+    event.preventDefault()
+    this.closeSidebar()
   }
 
   startDrag = e => {
@@ -127,6 +137,64 @@ class Sidebar extends Component {
     }
   }
 
+  startDragTouch = e => {
+    if (!this.state.dragging) {
+      if (document.activeElement) document.activeElement.blur()
+      e.preventDefault()
+      document.addEventListener("touchend", this.stopDragTouch)
+      document.addEventListener("touchmove", this.dragTouch)
+      this.mouseStart = e.touches[0].screenX
+      this.mousePos = e.touches[0].screenX
+      this.delta = 0
+      this.setState({
+        dragging: true,
+        dragPercent: 0,
+      })
+    }
+  }
+
+  stopDragTouch = e => {
+    if (this.state.dragging) {
+      e.preventDefault()
+      document.removeEventListener("touchend", this.stopDragTouch)
+      document.removeEventListener("touchmove", this.dragTouch)
+      if (this.state.dragPercent >= 0.5 || this.delta / 300 > 0.03) {
+        this.context.set({
+          sidebarActive: true,
+          blockView: true,
+        })
+      } else if (this.context.data.blockView) {
+        this.context.set({
+          blockView: false,
+        })
+      }
+      this.setState({
+        dragging: false,
+        dragPercent: 0,
+      })
+    }
+  }
+
+  dragTouch = e => {
+    if (this.state.dragging) {
+      e.preventDefault()
+      this.delta = e.touches[0].screenX - this.mousePos
+      this.mousePos = e.touches[0].screenX
+      const dragPercent = Math.max(
+        0,
+        Math.min((this.mousePos - this.mouseStart) / 300, 1)
+      )
+      if (!this.context.data.blockView && dragPercent > 0.05) {
+        this.context.set({
+          blockView: true,
+        })
+      }
+      this.setState({
+        dragPercent: dragPercent,
+      })
+    }
+  }
+
   get activePercent() {
     if (this.context.data.sidebarActive) return 1
     return this.state.dragging ? this.state.dragPercent : 0
@@ -135,7 +203,7 @@ class Sidebar extends Component {
   render() {
     return (
       <PageContextConsumer>
-        {({ data: pageData, set: setPageData }) => (
+        {({ data: pageData }) => (
           <>
             <div
               style={{
@@ -477,6 +545,7 @@ class Sidebar extends Component {
               tabIndex="-1"
               role="button"
               onMouseDown={this.startDrag}
+              onTouchStart={this.startDragTouch}
             >
               <></>
             </div>

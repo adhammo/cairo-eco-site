@@ -53,19 +53,26 @@ const HoverImage = ({ image, openPreview }) => (
         objectFit: "cover",
       }}
     />
-    <p
-      className="themed--color themed--back-var"
+    <div
+      className="themed--back-var"
       style={{
-        fontFamily: "open sans",
-        fontSize: "0.75rem",
-        lineHeight: "1rem",
-        padding: "0.5rem",
-        margin: 0,
-        transition: "background 0.2s, color 0.2s",
+        transition: "background 0.2s",
       }}
     >
-      {images[image.category][image.id].description}
-    </p>
+      <p
+        className="themed--color"
+        style={{
+          fontFamily: "open sans",
+          fontSize: "0.75rem",
+          lineHeight: "1rem",
+          padding: "0.5rem",
+          margin: 0,
+          transition: "color 0.2s",
+        }}
+      >
+        {images[image.category][image.id].description}
+      </p>
+    </div>
   </button>
 )
 
@@ -130,7 +137,7 @@ class GalleryPage extends Component {
   openPreview = image => {
     if (this.state.previewImage == null) {
       document.addEventListener("keydown", this.listenForEscape)
-      document.addEventListener("backbutton", this.closePreview)
+      document.addEventListener("backbutton", this.listenForBackbutton)
       if (document.activeElement) document.activeElement.blur()
       this.setState({
         previewImage: image,
@@ -144,7 +151,7 @@ class GalleryPage extends Component {
   closePreview = () => {
     if (this.state.previewImage != null) {
       document.removeEventListener("keydown", this.listenForEscape)
-      document.removeEventListener("backbutton", this.closePreview)
+      document.removeEventListener("backbutton", this.listenForBackbutton)
       if (document.activeElement) document.activeElement.blur()
       this.setState({
         previewImage: null,
@@ -156,7 +163,15 @@ class GalleryPage extends Component {
   }
 
   listenForEscape = event => {
-    if (event.keyCode === 27) this.closePreview()
+    if (event.keyCode === 27) {
+      event.preventDefault()
+      this.closeSidebar()
+    }
+  }
+
+  listenForBackbutton = event => {
+    event.preventDefault()
+    this.closeSidebar()
   }
 
   componentWillUnmount() {
