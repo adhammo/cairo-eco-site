@@ -1,0 +1,17 @@
+.post__title,
+.post__see-more {
+  opacity: 0.9;
+  border-bottom-style: dashed;
+}
+
+.post__title:hover,
+.post__title:focus,
+.post__see-more:hover,
+.post__see-more:focus {
+  opacity: 1;
+  border-bottom-style: solid;
+}
+
+.post__main > :last-child {
+  margin-bottom: 0;
+}

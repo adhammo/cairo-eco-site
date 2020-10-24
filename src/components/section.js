@@ -4,18 +4,16 @@ import Img from "gatsby-image"
 
 import "../styles/components/section.css"
 
-const Section = ({ backgroundColor, left = true, image, children }) => (
-  <section
-    className="section"
+const Section = ({ classes, left = true, image, children }) => (
+  <article
+    className={`section ${classes}`}
     style={{
       width: "100%",
-      padding: "2rem",
-      boxSizing: "border-box",
-      background: backgroundColor,
       overflow: "hidden",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
+      transition: "color 0.2s, border-color 0.2s, background 0.2s",
     }}
   >
     <div
@@ -27,7 +25,7 @@ const Section = ({ backgroundColor, left = true, image, children }) => (
       }}
     >
       <div
-        className="section-container"
+        className="section__container"
         style={{
           width: "100%",
           display: "grid",
@@ -38,29 +36,30 @@ const Section = ({ backgroundColor, left = true, image, children }) => (
       >
         <Fade left={left} right={!left} cascade>
           <div
-            className="section-image"
+            className="section__image"
             style={{
               width: "100%",
             }}
           >
             <Img
-              alt={image.alt}
+              title={image.description}
+              alt={image.description}
               style={{
                 width: "100%",
-                borderRadius: "4px",
-                boxShadow: "0 0 10px #0003",
+                borderRadius: 4,
+                boxShadow: `0 0 10px rgba(0, 0, 0, 0.2)`,
                 userSelect: "none",
               }}
               imgStyle={{
                 margin: 0,
               }}
-              fluid={image.fluid}
+              fluid={image.img}
             />
           </div>
         </Fade>
         <Fade bottom>
-          <div
-            className="section-text"
+          <main
+            className="section__text"
             style={{
               width: "100%",
               display: "flex",
@@ -68,11 +67,11 @@ const Section = ({ backgroundColor, left = true, image, children }) => (
             }}
           >
             {children}
-          </div>
+          </main>
         </Fade>
       </div>
     </div>
-  </section>
+  </article>
 )
 
 export default Section

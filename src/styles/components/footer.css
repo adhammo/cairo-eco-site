@@ -1,18 +1,17 @@
-.social-link {
-  list-style: none;
+.social__item {
   margin: 0 2rem 0 0;
 }
 
-.social-link:last-of-type {
+.social__item:last-child {
   margin: 0;
 }
 
-.social-icon {
+.social__link {
   filter: contrast(0) brightness(1.4);
-  transition: filter 0.2s;
 }
 
-.social-icon:hover {
+.social__link:hover,
+.social__link:focus {
   filter: none;
 }
 
@@ -20,7 +19,7 @@
   flex-direction: row;
 }
 
-.copyright-tag {
+.copyright__tag {
   margin-right: 0.4rem;
 }
 
@@ -29,7 +28,7 @@
     flex-direction: column;
   }
 
-  .copyright-tag {
+  .copyright__tag {
     margin-right: 0;
   }
 }

@@ -1,7 +1,7 @@
 import React from "react"
 import { Link } from "gatsby"
 
-import logo from "../images/shell-logo.svg"
+import ShellLogo from "../images/shell-logo.js"
 
 import "../styles/components/logo.css"
 
@@ -17,24 +17,21 @@ const Logo = () => (
       alignItems: "center",
     }}
   >
-    <img
-      src={logo}
-      alt="Cairo university eco-racing team logo"
+    <ShellLogo
       style={{
         height: "3rem",
+        width: "auto",
         margin: 0,
       }}
-      draggable="false"
     />
     <h1
-      className="logo-text"
+      className="logo__text themed--color-pri"
       style={{
-        padding: "0 0.5rem",
-        color: "#5599ff",
         textTransform: "uppercase",
         fontFamily: "quicksand",
         fontWeight: "bold",
         fontSize: "1.6rem",
+        transition: "color 0.2s",
       }}
     >
       Cairo University

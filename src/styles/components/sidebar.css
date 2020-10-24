@@ -1,29 +1,40 @@
-.nav-item > .nav-link {
-  border-bottom: 2px solid #202020;
+.nav__link:hover span,
+.nav__link:focus span {
+  color: inherit !important;
 }
 
-.nav-item:last-of-type > .nav-link {
-  border-bottom: 0;
+.dark__button .dark__button__ball {
+  background: #bcbcbc;
 }
 
-.nav-link {
-  color: #fff;
+.dark__button:hover .dark__button__ball {
+  background: #fff;
 }
 
-.nav-link:hover {
-  color: #5599ff;
+.theme__button .theme__button__box {
+  filter: brightness(100%);
 }
 
-.nav-link:focus {
-  color: #5599ff;
+.theme__button:hover .theme__button__box {
+  filter: brightness(120%);
 }
 
-.menu-close {
-  background-color: #5599ff;
+.dark__button .button__focus,
+.theme__button .button__focus {
+  border: 1px solid transparent;
 }
 
-.menu-close:hover,
-.menu-close:active,
-.menu-close:focus  {
-  background-color: #93beff;
+.dark__button:focus .button__focus,
+.theme__button:focus .button__focus {
+  border: 1px solid white;
+}
+
+.menu__button--close {
+  filter: brightness(100%);
+}
+
+.menu__button--close:hover,
+.menu__button--close:active,
+.menu__button--close:focus {
+  filter: brightness(120%);
 }

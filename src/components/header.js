@@ -1,24 +1,25 @@
 import React from "react"
 
-import { SidebarContextConsumer } from "../components/contexts/sidebar-context"
+import { PageContextConsumer } from "./contexts/page-context"
 
 import Logo from "../components/logo"
 
 import "../styles/components/header.css"
 
-const Header = ({ openSidebar }) => (
-  <SidebarContextConsumer>
-    {({ data: sidebarData, set: setSidebarData }) => (
+const Header = () => (
+  <PageContextConsumer>
+    {({ set: setPageData }) => (
       <header
+        className="themed--back-sec"
         style={{
           position: "relative",
           padding: "1rem 0.5rem",
           boxSizing: "border-box",
-          background: "#162d50",
+          transition: "background 0.2s",
         }}
       >
         <div
-          className="header-content"
+          className="header__container"
           style={{
             maxWidth: 1024,
             margin: "0 auto",
@@ -28,7 +29,7 @@ const Header = ({ openSidebar }) => (
         >
           <Logo />
           <button
-            className="menu-open"
+            className="menu__button--open themed--back-pri"
             style={{
               width: 24,
               height: 24,
@@ -36,21 +37,24 @@ const Header = ({ openSidebar }) => (
               boxSizing: "content-box",
               border: "none",
               borderRadius: "50%",
-              userSelect: "none",
               cursor: "pointer",
+              userSelect: "none",
+              overflow: "hidden",
               outline: "none",
+              transition: "background 0.2s",
             }}
             onClick={() => {
               if (document.activeElement) document.activeElement.blur()
-              setSidebarData({
+              setPageData({
                 sidebarActive: true,
+                blockView: true,
               })
             }}
           >
             <span
-              className="material-icons"
+              className="material-icons themed--color-sec"
               style={{
-                color: "#162d50",
+                transition: "color 0.2s",
               }}
             >
               menu
@@ -59,7 +63,7 @@ const Header = ({ openSidebar }) => (
         </div>
       </header>
     )}
-  </SidebarContextConsumer>
+  </PageContextConsumer>
 )
 
 export default Header

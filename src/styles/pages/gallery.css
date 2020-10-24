@@ -1,0 +1,35 @@
+.category__container {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.hover {
+  display: grid;
+}
+
+.category__section {
+  margin-bottom: 4rem;
+}
+
+.category__section:last-child {
+  margin-bottom: 0;
+}
+
+.preview__button--close {
+  filter: brightness(100%);
+}
+
+.preview__button--close:hover,
+.preview__button--close:active,
+.preview__button--close:focus {
+  filter: brightness(120%);
+}
+
+@media only screen and (max-width: 768px) {
+  .category__container {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hover--vert {
+    display: none;
+  }
+}

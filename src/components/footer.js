@@ -1,5 +1,6 @@
 import React from "react"
 import Swing from "react-reveal/Swing"
+import { OutboundLink } from "gatsby-plugin-google-analytics"
 
 import { socialMedia } from "../config"
 import { socialLogos } from "../static"
@@ -12,7 +13,7 @@ const Footer = () => (
       style={{
         padding: "1rem 0.5rem",
         boxSizing: "border-box",
-        background: "#222",
+        background: "#202020",
         display: "flex",
         justifyContent: "center",
       }}
@@ -25,46 +26,54 @@ const Footer = () => (
           alignItems: "center",
         }}
       >
-        {(() =>
-          socialMedia.map((media, index) => (
-            <Swing key={index}>
-              <li className="social-link">
-                <a
-                  href={media.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
+        {socialMedia.map((media, index) => (
+          <Swing key={index}>
+            <li
+              className="social__item"
+              style={{
+                listStyle: "none",
+              }}
+            >
+              <OutboundLink
+                className="social__link"
+                title={`${media.name} page`}
+                href={media.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: "block",
+                  width: 32,
+                  height: 32,
+                  textDecoration: "none",
+                  userSelect: "none",
+                  transition: "filter 0.2s",
+                }}
+                eventCategory="Social"
+                eventAction="Outbound link to social media"
+                eventLabel={media.name}
+              >
+                <img
+                  src={socialLogos[media.logo]}
+                  alt={`${media.name} page`}
                   style={{
                     display: "block",
                     width: 32,
                     height: 32,
-                    textDecoration: "none",
-                    userSelect: "none",
+                    margin: 0,
                   }}
-                >
-                  <img
-                    className="social-icon"
-                    title={`${media.name} page`}
-                    src={socialLogos[media.logo]}
-                    alt={`${media.name} page`}
-                    style={{
-                      display: "block",
-                      width: 32,
-                      height: 32,
-                      margin: 0,
-                    }}
-                    draggable="false"
-                  />
-                </a>
-              </li>
-            </Swing>
-          )))()}
+                  draggable="false"
+                />
+              </OutboundLink>
+            </li>
+          </Swing>
+        ))}
       </ul>
     </div>
     <div
       style={{
         padding: "0.5rem 0.5rem",
         boxSizing: "border-box",
-        background: "#111",
+        background: "#101010",
       }}
     >
       <div
@@ -83,13 +92,13 @@ const Footer = () => (
             margin: 0,
             fontFamily: "open sans",
             fontSize: "0.8rem",
-            color: "#fff",
+            color: "#f2f2f2",
             display: "flex",
             alignItems: "center",
           }}
         >
           <span
-            className="copyright-tag"
+            className="copyright__tag"
             style={{
               opacity: 0.7,
               userSelect: "none",

@@ -1,49 +1,52 @@
 import React from "react"
 
-import { sidebarPages } from "../config"
-
-import {
-  SidebarContextProvider,
-  SidebarContextConsumer,
-} from "../components/contexts/sidebar-context"
+import { PageContextConsumer } from "../components/contexts/page-context"
 
 import Header from "../components/header"
 import Footer from "../components/footer"
 import Sidebar from "../components/sidebar"
 
-import "../styles/layouts/page.css"
+import { sidebarPages } from "../config"
 
 const Page = ({ title, children }) => (
-  <SidebarContextProvider>
-    <SidebarContextConsumer>
-      {({ data }) => (
+  <PageContextConsumer>
+    {({ data: pageData }) => (
+      <div
+        style={{
+          width: "100%",
+          height: "100vh",
+          overflowY: pageData.blockView ? "hidden" : "auto",
+        }}
+      >
         <div
+          id="body"
           style={{
-            width: "100%",
-            height: "100vh",
-            overflowY: data.sidebarActive ? "hidden" : "auto",
+            position: "relative",
+            minHeight: "100%",
+            display: "grid",
+            gridTemplateRows: "auto 1fr auto",
           }}
         >
           <Header />
           <main
             style={{
-              pointerEvents: data.sidebarActive ? "none" : "all",
+              height: "100%",
+              pointerEvents: pageData.blockView ? "none" : "all",
             }}
           >
             {children}
           </main>
           <Footer />
           <Sidebar
-            pages={(() =>
-              sidebarPages.reduce((pages, page) => {
-                if (page.title !== title) pages.push(page)
-                return pages
-              }, []))()}
+            pages={sidebarPages.reduce((pages, page) => {
+              if (page.title !== title) pages.push(page)
+              return pages
+            }, [])}
           />
         </div>
-      )}
-    </SidebarContextConsumer>
-  </SidebarContextProvider>
+      </div>
+    )}
+  </PageContextConsumer>
 )
 
 export default Page
