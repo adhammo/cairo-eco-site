@@ -27,8 +27,8 @@ const HoverImage = ({ image, openPreview }) => (
       }`,
       width: "100%",
       height: "100%",
-      justifyItems: "stretch",
-      gridTemplateRows: "1fr auto",
+      flexDirection: "column",
+      alignItems: "stretch",
       borderRadius: "4px",
       overflow: "hidden",
       boxShadow: "0 1px 2px rgba(0, 0, 0, 0.2)",
@@ -176,8 +176,8 @@ class GalleryPage extends Component {
   }
 
   listenForBackbutton = event => {
-    event.preventDefault()
     this.closeSidebar()
+    return false;
   }
 
   componentWillUnmount() {

@@ -75,8 +75,8 @@ class Sidebar extends Component {
   }
 
   listenForBackbutton = event => {
-    event.preventDefault()
     this.closeSidebar()
+    return false;
   }
 
   startDrag = e => {
@@ -148,8 +148,6 @@ class Sidebar extends Component {
         dragging: true,
         dragPercent: 0,
       })
-    } else {
-      this.stopDragTouch()
     }
   }
 

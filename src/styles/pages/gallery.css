@@ -3,7 +3,7 @@
 }
 
 .hover {
-  display: grid;
+  display: flex;
 }
 
 .category__section {
