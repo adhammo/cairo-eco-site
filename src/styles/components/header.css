@@ -1,24 +1,23 @@
-.header-content {
+.header__container {
   justify-content: space-between;
 }
 
-.menu-open {
-  position: relative;
-  background-color: #5599ff;
+.menu__button--open {
+  filter: brightness(100%);
 }
 
-.menu-open:hover,
-.menu-open:active,
-.menu-open:focus {
-  background-color: #93beff;
+.menu__button--open:hover,
+.menu__button--open:active,
+.menu__button--open:focus {
+  filter: brightness(120%);
 }
 
 @media only screen and (max-width: 768px) {
-  .header-content {
+  .header__container {
     justify-content: center;
   }
 
-  .menu-open {
+  .menu__button--open {
     position: absolute;
     right: 0.5rem;
     top: 0.5rem;

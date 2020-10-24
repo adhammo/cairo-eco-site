@@ -1,49 +1,51 @@
-import React, { Component } from "react"
 import PropTypes from "prop-types"
+import React, { Component } from "react"
 import { Swipeable } from "react-swipeable"
 import { StaticQuery, graphql } from "gatsby"
 import Img from "gatsby-image"
 
+import slides from "../content/slides"
+
 import "../styles/components/slideshow.css"
 
 class SlideShow extends Component {
-  constructor(props) {
+  constructor() {
     super()
 
-    this.setActive = this.setActive.bind(this)
     this.state = {
       activeIndex: 0,
+      disabled: false,
     }
 
     this.updateTimeout = null
     this.menuButtons = []
-    for (let i = 0; i < props.images.length; i++) {
+    for (let i = 0; i < slides.length; i++) {
       this.menuButtons[i] = React.createRef()
     }
   }
 
   componentDidMount() {
-    this.updateTimeout = setTimeout(this.goRight, 10000)
+    this.updateTimeout = setTimeout(this.timer, 10000)
   }
 
   componentWillUnmount() {
-    if (this.updateTimeout) {
-      clearTimeout(this.updateTimeout)
-      this.updateTimeout = null
+    if (this.state.disabled) {
+      document.removeEventListener("touchend", this.enable)
+      document.removeEventListener("mouseup", this.enable)
+    } else {
+      if (this.updateTimeout) clearTimeout(this.updateTimeout)
     }
-  }
-
-  componentDidUpdate() {
-    if (this.updateTimeout) clearTimeout(this.updateTimeout)
-    this.updateTimeout = setTimeout(this.goRight, 10000)
   }
 
   setActive(index) {
     if (
       index >= 0 &&
-      index <= this.props.images.length - 1 &&
+      index <= slides.length - 1 &&
       this.state.activeIndex !== index
     ) {
+      if (!this.state.disabled && this.updateTimeout) {
+        clearTimeout(this.updateTimeout)
+      }
       this.menuButtons[index].current.blur()
       this.setState({
         activeIndex: index,
@@ -59,26 +61,55 @@ class SlideShow extends Component {
     if (this.state.activeIndex > 0) {
       this.setActive(this.state.activeIndex - 1)
     } else {
-      this.setActive(this.props.images.length - 1)
+      this.setActive(slides.length - 1)
     }
   }
 
   goRight = () => {
-    if (this.state.activeIndex < this.props.images.length - 1) {
+    if (this.state.activeIndex < slides.length - 1) {
       this.setActive(this.state.activeIndex + 1)
     } else {
       this.setActive(0)
     }
   }
 
+  timer = () => {
+    this.goRight()
+    if (this.updateTimeout) clearTimeout(this.updateTimeout)
+    this.updateTimeout = setTimeout(this.timer, 10000)
+  }
+
+  enable = () => {
+    if (this.state.disabled) {
+      this.updateTimeout = setTimeout(this.timer, 10000)
+      document.removeEventListener("touchend", this.enable)
+      document.removeEventListener("mouseup", this.enable)
+      this.setState({
+        disabled: false,
+      })
+    }
+  }
+
+  disable = () => {
+    if (!this.state.disabled) {
+      if (this.updateTimeout) clearTimeout(this.updateTimeout)
+      document.addEventListener("touchend", this.enable)
+      document.addEventListener("mouseup", this.enable)
+      this.setState({
+        disabled: true,
+      })
+    }
+  }
+
   render() {
     return (
-      <div
+      <section
+        className="themed--back-sec"
         style={{
           minHeight: 300,
-          padding: "0 0.5rem 1rem",
+          padding: "1rem 0.5rem",
           boxSizing: "border-box",
-          background: "#162d50",
+          transition: "background 0.2s",
         }}
       >
         <div
@@ -87,31 +118,13 @@ class SlideShow extends Component {
             margin: "0 auto",
             borderRadius: 4,
             overflow: "hidden",
-            boxShadow: "0 0 10px #0003",
+            boxShadow: `0 0 10px rgba(0, 0, 0, 0.2)`,
             outline: "none",
           }}
           role="button"
           tabIndex="-1"
-          onTouchStart={() => {
-            if (this.updateTimeout) {
-              clearTimeout(this.updateTimeout)
-              this.updateTimeout = null
-            }
-          }}
-          onTouchEnd={() => {
-            if (!this.updateTimeout)
-              this.updateTimeout = setTimeout(this.goRight, 10000)
-          }}
-          onMouseDown={() => {
-            if (this.updateTimeout) {
-              clearTimeout(this.updateTimeout)
-              this.updateTimeout = null
-            }
-          }}
-          onMouseUp={() => {
-            if (!this.updateTimeout)
-              this.updateTimeout = setTimeout(this.goRight, 10000)
-          }}
+          onTouchStart={this.disable}
+          onMouseDown={this.disable}
         >
           <Swipeable
             onSwipedLeft={this.goRight}
@@ -121,24 +134,24 @@ class SlideShow extends Component {
           >
             <div
               style={{
-                width: `${100 * this.props.images.length}%`,
+                width: `${100 * slides.length}%`,
                 display: "flex",
                 alignItems: "stretch",
                 transform: `translate(-${
-                  (100 / this.props.images.length) * this.state.activeIndex
+                  (100 / slides.length) * this.state.activeIndex
                 }%, 0)`,
                 transition: "transform 0.6s",
                 userSelect: "none",
               }}
             >
-              {this.props.images.map((image, index) => (
+              {slides.map((slide, index) => (
                 <div
                   key={index}
-                  style={{ width: "100%", order: image.index }}
-                  title={image.name}
+                  style={{ width: "100%" }}
+                  title={slide.description}
                 >
                   <Img
-                    alt={image.name}
+                    alt={slide.description}
                     style={{
                       width: "100%",
                       minHeight: 300,
@@ -146,17 +159,17 @@ class SlideShow extends Component {
                     imgStyle={{
                       margin: 0,
                       transform:
-                        this.state.activeIndex === image.index - 1
+                        this.state.activeIndex === index
                           ? "scale(1, 1)"
                           : "scale(1.1, 1.1)",
                       filter:
-                        this.state.activeIndex === image.index - 1
+                        this.state.activeIndex === index
                           ? "grayscale(0%)"
                           : "grayscale(100%)",
                       transition: "transform 0.3s, filter 0.3s",
                       pointerEvents: "none",
                     }}
-                    fluid={image.fluid}
+                    fluid={this.props.slideImgs[slide.id]}
                   />
                 </div>
               ))}
@@ -171,66 +184,64 @@ class SlideShow extends Component {
             justifyContent: "center",
           }}
         >
-          {this.props.images.map((image, index) => (
+          {slides.map((image, index) => (
             <button
-              className={`images-nav-button no-focus${
-                this.state.activeIndex === image.index - 1 ? " active" : ""
+              className={`image__button${
+                this.state.activeIndex === index ? "--active " : " "
+              }--no-focus ${
+                this.state.activeIndex === index ? " themed--back-pri" : ""
               }`}
               key={index}
-              ref={this.menuButtons[image.index - 1]}
-              style={{
-                background: "none",
-                border: "none",
-                padding: 0,
-                cursor:
-                  this.state.activeIndex === image.index - 1
-                    ? "default"
-                    : "pointer",
-                outline: "none",
-                order: image.index,
-              }}
-              tabIndex="-1"
-              onClick={this.go(image.index - 1)}
-            >
-              <div
-                style={{
+              ref={this.menuButtons[index]}
+              style={(() => {
+                let style = {
                   width: 20,
                   height: 20,
                   margin: 5,
                   borderRadius: 10,
-                }}
-              ></div>
+                  border: "none",
+                  padding: 0,
+                  cursor:
+                    this.state.activeIndex === index ? "default" : "pointer",
+                  outline: "none",
+                  order: index,
+                }
+                if (this.state.activeIndex !== index)
+                  style.background = "#f2f2f2"
+                return style
+              })()}
+              tabIndex="-1"
+              onClick={this.go(index)}
+            >
+              <></>
             </button>
           ))}
         </div>
-      </div>
+      </section>
     )
   }
 }
 
 SlideShow.propTypes = {
-  images: PropTypes.array.isRequired,
+  slideImgs: PropTypes.object.isRequired,
 }
 
 export default props => (
   <StaticQuery
     query={graphql`
       query {
-        allFile(
+        slideImgs: allFile(
           filter: {
-            sourceInstanceName: { eq: "images" }
+            sourceInstanceName: { eq: "resources" }
             relativeDirectory: { eq: "slides" }
           }
         ) {
-          edges {
-            node {
-              id
-              name
-              childImageSharp {
-                fluid(maxWidth: 1024, quality: 100) {
-                  ...GatsbyImageSharpFluid
-                  ...GatsbyImageSharpFluidLimitPresentationSize
-                }
+          nodes {
+            name
+            childImageSharp {
+              fluid(maxWidth: 1024) {
+                ...GatsbyImageSharpFluid
+                ...GatsbyImageSharpFluidLimitPresentationSize
               }
             }
           }
@@ -240,12 +251,13 @@ export default props => (
     render={data => (
       <SlideShow
         {...props}
-        images={data.allFile.edges.map(edge => ({
-          id: edge.node.id,
-          index: edge.node.name.split(". ")[0],
-          name: edge.node.name.split(". ")[1],
-          fluid: edge.node.childImageSharp.fluid,
-        }))}
+        slideImgs={data.slideImgs.nodes.reduce(
+          (slideImgs, node) => ({
+            ...slideImgs,
+            [node.name]: node.childImageSharp.fluid,
+          }),
+          {}
+        )}
       />
     )}
   />

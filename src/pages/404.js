@@ -24,7 +24,7 @@ const NotFoundPage = () => (
       style={{
         margin: 0,
         fontFamily: "open sans",
-        opacity: 0.7,
+        opacity: 0.8,
       }}
     >
       Oops! No resource was found on this page.

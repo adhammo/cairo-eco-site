@@ -15,12 +15,8 @@ exports.pagesMetadata = {
     title: "News",
     layout: "page",
   },
-  "/contact/": {
-    title: "Contact",
-    layout: "page",
-  },
-  "/about/": {
-    title: "About",
+  "/gallery/": {
+    title: "Gallery",
     layout: "page",
   },
 }
@@ -28,8 +24,7 @@ exports.pagesMetadata = {
 exports.sidebarPages = [
   { title: "Home", path: "/" },
   { title: "News", path: "/news" },
-  { title: "About", path: "/about" },
-  { title: "Contact", path: "/contact" },
+  { title: "Gallery", path: "/gallery" },
 ]
 
 exports.socialMedia = [
@@ -39,13 +34,18 @@ exports.socialMedia = [
     url: "https://www.facebook.com/ShellEcoMarathonCUT",
   },
   {
-    name: "YouTube",
-    logo: "youtube",
-    url: "https://www.youtube.com/channel/UCA5WTBlmb-493S17BPU0Mag",
-  },
-  {
     name: "Instagram",
     logo: "instagram",
     url: "https://www.instagram.com/cuecoracingteam",
+  },
+  {
+    name: "LinkedIn",
+    logo: "linkedin",
+    url: "https://www.linkedin.com/company/cutsem",
+  },
+  {
+    name: "YouTube",
+    logo: "youtube",
+    url: "https://www.youtube.com/channel/UCA5WTBlmb-493S17BPU0Mag",
   },
 ]
