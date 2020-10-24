@@ -25,6 +25,8 @@ const HoverImage = ({ image, openPreview }) => (
       gridColumn: `${images[image.category][image.id].column} / span ${
         images[image.category][image.id].width
       }`,
+      width: "100%",
+      height: "100%",
       justifyItems: "stretch",
       gridTemplateRows: "1fr auto",
       borderRadius: "4px",
@@ -56,6 +58,11 @@ const HoverImage = ({ image, openPreview }) => (
     <div
       className="themed--back-var"
       style={{
+        padding: "0.5rem",
+        boxSizing: "border-box",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         transition: "background 0.2s",
       }}
     >
@@ -65,7 +72,6 @@ const HoverImage = ({ image, openPreview }) => (
           fontFamily: "open sans",
           fontSize: "0.75rem",
           lineHeight: "1rem",
-          padding: "0.5rem",
           margin: 0,
           transition: "color 0.2s",
         }}

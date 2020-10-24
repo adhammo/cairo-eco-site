@@ -103,7 +103,6 @@ class Sidebar extends Component {
       if (this.state.dragPercent >= 0.5 || this.delta / 300 > 0.03) {
         this.context.set({
           sidebarActive: true,
-          blockView: true,
         })
       } else if (this.context.data.blockView) {
         this.context.set({
@@ -140,7 +139,6 @@ class Sidebar extends Component {
   startDragTouch = e => {
     if (!this.state.dragging) {
       if (document.activeElement) document.activeElement.blur()
-      e.preventDefault()
       document.addEventListener("touchend", this.stopDragTouch)
       document.addEventListener("touchmove", this.dragTouch)
       this.mouseStart = e.touches[0].screenX
@@ -150,18 +148,18 @@ class Sidebar extends Component {
         dragging: true,
         dragPercent: 0,
       })
+    } else {
+      this.stopDragTouch()
     }
   }
 
   stopDragTouch = e => {
     if (this.state.dragging) {
-      e.preventDefault()
       document.removeEventListener("touchend", this.stopDragTouch)
       document.removeEventListener("touchmove", this.dragTouch)
       if (this.state.dragPercent >= 0.5 || this.delta / 300 > 0.03) {
         this.context.set({
           sidebarActive: true,
-          blockView: true,
         })
       } else if (this.context.data.blockView) {
         this.context.set({
@@ -177,7 +175,6 @@ class Sidebar extends Component {
 
   dragTouch = e => {
     if (this.state.dragging) {
-      e.preventDefault()
       this.delta = e.touches[0].screenX - this.mousePos
       this.mousePos = e.touches[0].screenX
       const dragPercent = Math.max(
@@ -537,7 +534,7 @@ class Sidebar extends Component {
                 position: "absolute",
                 left: 0,
                 top: 0,
-                width: 30,
+                width: 15,
                 height: "100%",
                 pointerEvents: pageData.blockView ? "none" : "all",
                 outline: "none",
