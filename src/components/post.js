@@ -134,9 +134,15 @@ const Post = ({ post, author, authorImg, short = true, more = true }) => (
         boxSizing: "border-box",
         display: "flex",
         flexDirection: "column",
+        transition: "background 0.2s",
       }}
     >
-      <main className="post__main themed--color themed--border">
+      <main
+        className="post__main themed--color themed--border"
+        style={{
+          transition: "color 0.2s, border-color 0.2s",
+        }}
+      >
         <ThemeProvider theme={postTheme} components={components}>
           <MDXRenderer>{post.body}</MDXRenderer>
         </ThemeProvider>
@@ -154,6 +160,7 @@ const Post = ({ post, author, authorImg, short = true, more = true }) => (
             outline: "none",
             textDecoration: "none",
             borderBottomWidth: 1,
+            transition: "color 0.2s, border-color 0.2s",
           }}
         >
           See More
