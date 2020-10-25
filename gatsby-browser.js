@@ -1,7 +1,7 @@
 const style = require("./src/style")
 
 exports.onClientEntry = () => {
-  // style.init()
+  style.init()
 }
 
 exports.shouldUpdateScroll = () => {

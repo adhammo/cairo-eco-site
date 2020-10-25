@@ -58,6 +58,7 @@ const HoverImage = ({ image, openPreview }) => (
     <div
       className="themed--back-var"
       style={{
+        height: "30px",
         padding: "0.5rem",
         boxSizing: "border-box",
         display: "flex",
@@ -142,8 +143,6 @@ class GalleryPage extends Component {
 
   openPreview = image => {
     if (this.state.previewImage == null) {
-      document.addEventListener("keydown", this.listenForEscape)
-      document.addEventListener("backbutton", this.listenForBackbutton)
       if (document.activeElement) document.activeElement.blur()
       this.setState({
         previewImage: image,
@@ -156,8 +155,6 @@ class GalleryPage extends Component {
 
   closePreview = () => {
     if (this.state.previewImage != null) {
-      document.removeEventListener("keydown", this.listenForEscape)
-      document.removeEventListener("backbutton", this.listenForBackbutton)
       if (document.activeElement) document.activeElement.blur()
       this.setState({
         previewImage: null,
@@ -165,25 +162,6 @@ class GalleryPage extends Component {
       this.context.set({
         blockView: false,
       })
-    }
-  }
-
-  listenForEscape = event => {
-    if (event.keyCode === 27) {
-      event.preventDefault()
-      this.closeSidebar()
-    }
-  }
-
-  listenForBackbutton = event => {
-    this.closeSidebar()
-    return false;
-  }
-
-  componentWillUnmount() {
-    if (this.state.previewImage != null) {
-      document.removeEventListener("keydown", this.listenForEscape)
-      document.removeEventListener("backbutton", this.closePreview)
     }
   }
 

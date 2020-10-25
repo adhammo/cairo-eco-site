@@ -21,11 +21,6 @@ class Sidebar extends Component {
   }
 
   componentWillUnmount() {
-    if (this.state.active) {
-      document.removeEventListener("keydown", this.listenForEscape)
-      document.removeEventListener("backbutton", this.listenForBackbutton)
-    }
-
     if (this.state.dragging) {
       document.removeEventListener("mouseup", this.stopDrag)
       document.removeEventListener("mousemove", this.drag)
@@ -39,44 +34,12 @@ class Sidebar extends Component {
     }
   }
 
-  componentDidUpdate() {
-    if (this.context.data.sidebarActive) {
-      if (!this.state.active) {
-        document.addEventListener("keydown", this.listenForEscape)
-        document.addEventListener("backbutton", this.listenForBackbutton)
-        this.setState({
-          active: true,
-        })
-      }
-    } else {
-      if (this.state.active) {
-        document.removeEventListener("keydown", this.listenForEscape)
-        document.removeEventListener("backbutton", this.listenForBackbutton)
-        this.setState({
-          active: false,
-        })
-      }
-    }
-  }
-
   closeSidebar = () => {
     if (document.activeElement) document.activeElement.blur()
     this.context.set({
       sidebarActive: false,
       blockView: false,
     })
-  }
-
-  listenForEscape = event => {
-    if (event.keyCode === 27) {
-      event.preventDefault()
-      this.closeSidebar()
-    }
-  }
-
-  listenForBackbutton = event => {
-    this.closeSidebar()
-    return false;
   }
 
   startDrag = e => {
@@ -153,6 +116,7 @@ class Sidebar extends Component {
 
   stopDragTouch = e => {
     if (this.state.dragging) {
+      if (e.touches.length !== 0) return
       document.removeEventListener("touchend", this.stopDragTouch)
       document.removeEventListener("touchmove", this.dragTouch)
       if (this.state.dragPercent >= 0.5 || this.delta / 300 > 0.03) {
@@ -215,9 +179,8 @@ class Sidebar extends Component {
               }}
               tabIndex="-1"
               role="button"
-              onMouseDown={e => {
-                if (e.button === 0) this.closeSidebar()
-              }}
+              onClick={this.closeSidebar}
+              onKeyDown={() => {}}
             >
               <></>
             </div>

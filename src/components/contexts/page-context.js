@@ -28,12 +28,12 @@ class PageContextProvider extends Component {
       const body = document.querySelector("#body")
       const bodyContainer = body.parentElement
       if (newData.blockView) {
-        const scroll = window.pageYOffset
+        const top = -body.getBoundingClientRect().top
         bodyContainer.style.height = "100vh"
         bodyContainer.style.overflowY = "hidden"
         body.style.position = "absolute"
         body.style.left = 0
-        body.style.top = `-${scroll}px`
+        body.style.top = `-${top}px`
       } else {
         const top = -body.offsetTop
         body.style.position = "relative"
