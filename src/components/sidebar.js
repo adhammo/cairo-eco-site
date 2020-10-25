@@ -66,10 +66,7 @@ class Sidebar extends Component {
       if (this.state.dragPercent >= 0.5 || this.delta / 300 > 0.03) {
         this.context.set({
           sidebarActive: true,
-        })
-      } else if (this.context.data.blockView) {
-        this.context.set({
-          blockView: false,
+          blockView: true,
         })
       }
       this.setState({
@@ -82,17 +79,12 @@ class Sidebar extends Component {
   drag = e => {
     if (this.state.dragging) {
       e.preventDefault()
-      this.delta = e.screenX - this.mousePos
+      this.delta = this.mousePos - e.screenX
       this.mousePos = e.screenX
       const dragPercent = Math.max(
         0,
-        Math.min((this.mousePos - this.mouseStart) / 300, 1)
+        Math.min((this.mouseStart - this.mousePos) / 300, 1)
       )
-      if (!this.context.data.blockView && dragPercent > 0.05) {
-        this.context.set({
-          blockView: true,
-        })
-      }
       this.setState({
         dragPercent: dragPercent,
       })
@@ -122,10 +114,7 @@ class Sidebar extends Component {
       if (this.state.dragPercent >= 0.5 || this.delta / 300 > 0.03) {
         this.context.set({
           sidebarActive: true,
-        })
-      } else if (this.context.data.blockView) {
-        this.context.set({
-          blockView: false,
+          blockView: true,
         })
       }
       this.setState({
@@ -137,17 +126,12 @@ class Sidebar extends Component {
 
   dragTouch = e => {
     if (this.state.dragging) {
-      this.delta = e.touches[0].screenX - this.mousePos
+      this.delta = this.mousePos - e.touches[0].screenX
       this.mousePos = e.touches[0].screenX
       const dragPercent = Math.max(
         0,
-        Math.min((this.mousePos - this.mouseStart) / 300, 1)
+        Math.min((this.mouseStart - this.mousePos) / 300, 1)
       )
-      if (!this.context.data.blockView && dragPercent > 0.05) {
-        this.context.set({
-          blockView: true,
-        })
-      }
       this.setState({
         dragPercent: dragPercent,
       })
@@ -166,11 +150,11 @@ class Sidebar extends Component {
           <>
             <div
               style={{
-                position: "absolute",
+                position: "fixed",
                 top: 0,
+                bottom: 0,
                 left: 0,
-                width: "100%",
-                height: "100%",
+                right: 0,
                 background: "#000",
                 opacity: 0.6 * this.activePercent,
                 transition: this.state.dragging ? "none" : "opacity 0.3s",
@@ -187,15 +171,15 @@ class Sidebar extends Component {
             <div
               style={{
                 width: 300,
-                height: "100vh",
                 position: "fixed",
-                left: -300,
                 top: 0,
+                bottom: 0,
+                right: -300,
                 background: "#202020",
-                boxShadow: `2px 0 6px rgba(0, 0, 0, ${
+                boxShadow: `-2px 0 6px rgba(0, 0, 0, ${
                   0.5 * this.activePercent
                 })`,
-                transform: `translate(${this.activePercent * 100}%, 0)`,
+                transform: `translate(-${this.activePercent * 100}%, 0)`,
                 transition: this.state.dragging
                   ? "none"
                   : "transform 0.3s, box-shadow 0.3s",
@@ -492,11 +476,11 @@ class Sidebar extends Component {
             </div>
             <div
               style={{
-                position: "absolute",
-                left: 0,
+                position: "fixed",
                 top: 0,
+                bottom: 0,
+                right: 0,
                 width: 15,
-                height: "100%",
                 pointerEvents: pageData.blockView ? "none" : "all",
                 outline: "none",
               }}

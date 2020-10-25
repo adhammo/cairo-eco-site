@@ -13,7 +13,6 @@ const Page = ({ title, children }) => (
     {({ data: pageData }) => (
       <div
         style={{
-          position: "relative",
           width: "100%",
         }}
       >

@@ -29,18 +29,22 @@ class PageContextProvider extends Component {
       const bodyContainer = body.parentElement
       if (newData.blockView) {
         const top = window.pageYOffset
-        bodyContainer.style.height = "100vh"
+        bodyContainer.style.position = "fixed"
+        bodyContainer.style.top = 0
+        bodyContainer.style.bottom = 0
         bodyContainer.style.overflowY = "hidden"
-        body.style.position = "fixed"
+        body.style.position = "absolute"
         body.style.left = 0
         body.style.top = `-${top}px`
       } else {
         const top = -body.offsetTop
+        bodyContainer.style.position = "relative"
+        bodyContainer.style.top = null
+        bodyContainer.style.bottom = null
+        bodyContainer.style.overflowY = "auto"
         body.style.position = "relative"
         body.style.left = null
         body.style.top = null
-        bodyContainer.style.height = "auto"
-        bodyContainer.style.overflowY = "auto"
         window.scrollTo(0, top)
       }
     }
