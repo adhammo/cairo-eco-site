@@ -28,10 +28,10 @@ class PageContextProvider extends Component {
       const body = document.querySelector("#body")
       const bodyContainer = body.parentElement
       if (newData.blockView) {
-        const top = -body.getBoundingClientRect().top
+        const top = window.pageYOffset
         bodyContainer.style.height = "100vh"
         bodyContainer.style.overflowY = "hidden"
-        body.style.position = "absolute"
+        body.style.position = "fixed"
         body.style.left = 0
         body.style.top = `-${top}px`
       } else {

@@ -25,8 +25,8 @@ const HoverImage = ({ image, openPreview }) => (
       gridColumn: `${images[image.category][image.id].column} / span ${
         images[image.category][image.id].width
       }`,
-      width: "100%",
-      height: "100%",
+      alignSelf: "stretch",
+      justifySelf: "stretch",
       flexDirection: "column",
       alignItems: "stretch",
       borderRadius: "4px",
@@ -47,10 +47,13 @@ const HoverImage = ({ image, openPreview }) => (
       fluid={image.fluid}
       style={{
         width: "100%",
-        height: "100%",
+        flex: "1",
+        overflow: "hidden",
         userSelect: "none",
       }}
       imgStyle={{
+        width: "100%",
+        height: "100%",
         margin: 0,
         objectFit: "cover",
       }}
@@ -58,12 +61,9 @@ const HoverImage = ({ image, openPreview }) => (
     <div
       className="themed--back-var"
       style={{
-        height: "30px",
+        flex: "0 0 auto",
         padding: "0.5rem",
         boxSizing: "border-box",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
         transition: "background 0.2s",
       }}
     >
