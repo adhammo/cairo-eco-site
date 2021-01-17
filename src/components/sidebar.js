@@ -16,42 +16,21 @@ class Sidebar extends Component {
     this.state = {
       active: false,
       dragging: false,
-      dragPercent: 0,
     }
+
+    this.sidebar = React.createRef(null)
+    this.sidebarBack = React.createRef(null)
   }
 
   componentWillUnmount() {
-    if (this.state.active) {
-      document.removeEventListener("keydown", this.listenForEscape)
-      document.removeEventListener("backbutton", this.closeSidebar)
-    }
-
     if (this.state.dragging) {
       document.removeEventListener("mouseup", this.stopDrag)
       document.removeEventListener("mousemove", this.drag)
+      document.removeEventListener("touchend", this.stopDragTouch)
+      document.removeEventListener("touchmove", this.dragTouch)
       if (this.context.data.blockView) {
         this.context.set({
           blockView: false,
-        })
-      }
-    }
-  }
-
-  componentDidUpdate() {
-    if (this.context.data.sidebarActive) {
-      if (!this.state.active) {
-        document.addEventListener("keydown", this.listenForEscape)
-        document.addEventListener("backbutton", this.closeSidebar)
-        this.setState({
-          active: true,
-        })
-      }
-    } else {
-      if (this.state.active) {
-        document.removeEventListener("keydown", this.listenForEscape)
-        document.removeEventListener("backbutton", this.closeSidebar)
-        this.setState({
-          active: false,
         })
       }
     }
@@ -65,118 +44,154 @@ class Sidebar extends Component {
     })
   }
 
-  listenForEscape = event => {
-    if (event.keyCode === 27) this.closeSidebar()
+  applyDrag = () => {
+    this.sidebarBack.current.style.opacity = 0.6 * this.dragPercent
+    this.sidebar.current.style.boxShadow = `-2px 0 6px rgba(0, 0, 0, ${
+      0.5 * this.dragPercent
+    })`
+    this.sidebar.current.style.transform = `translate(-${
+      100 * this.dragPercent
+    }%, 0%)`
   }
 
-  startDrag = e => {
-    if (!this.state.dragging) {
-      if (document.activeElement) document.activeElement.blur()
-      e.preventDefault()
-      document.addEventListener("mouseup", this.stopDrag)
-      document.addEventListener("mousemove", this.drag)
-      this.mouseStart = e.screenX
-      this.mousePos = e.screenX
-      this.delta = 0
-      this.setState({
-        dragging: true,
-        dragPercent: 0,
+  startDrag = x => {
+    this.dragStart = x
+    this.dragPos = x
+    this.dragPercent = 0
+    this.dragDelta = 0
+    this.setState({
+      dragging: true,
+    }, this.applyDrag)
+  }
+
+  stopDrag = () => {
+    this.setState({
+      dragging: false,
+    })
+    if (this.dragPercent >= 0.5 || this.dragDelta >= 10) {
+      this.context.set({
+        sidebarActive: true,
+        blockView: true,
       })
     }
   }
 
-  stopDrag = e => {
-    if (this.state.dragging) {
-      e.preventDefault()
-      document.removeEventListener("mouseup", this.stopDrag)
-      document.removeEventListener("mousemove", this.drag)
-      if (this.state.dragPercent >= 0.5 || this.delta / 300 > 0.03) {
-        this.context.set({
-          sidebarActive: true,
-          blockView: true,
-        })
-      } else if (this.context.data.blockView) {
-        this.context.set({
-          blockView: false,
-        })
-      }
-      this.setState({
-        dragging: false,
-        dragPercent: 0,
-      })
-    }
+  drag = x => {
+    this.dragDelta = this.dragPos - x
+    this.dragPos = x
+    this.dragPercent = Math.min(
+      Math.max((this.dragStart - this.dragPos) / 300, 0),
+      1
+    )
+    this.applyDrag()
   }
 
-  drag = e => {
-    if (this.state.dragging) {
-      e.preventDefault()
-      this.delta = e.screenX - this.mousePos
-      this.mousePos = e.screenX
-      const dragPercent = Math.max(
-        0,
-        Math.min((this.mousePos - this.mouseStart) / 300, 1)
-      )
-      if (!this.context.data.blockView && dragPercent > 0.05) {
-        this.context.set({
-          blockView: true,
-        })
-      }
-      this.setState({
-        dragPercent: dragPercent,
-      })
-    }
+  startMouse = e => {
+    if (this.state.dragging) return
+
+    if (document.activeElement) document.activeElement.blur()
+    e.preventDefault()
+    document.addEventListener("mouseup", this.stopMouse)
+    document.addEventListener("mousemove", this.mouseDrag)
+    this.startDrag(e.screenX)
   }
 
-  get activePercent() {
-    if (this.context.data.sidebarActive) return 1
-    return this.state.dragging ? this.state.dragPercent : 0
+  stopMouse = e => {
+    if (!this.state.dragging) return
+
+    e.preventDefault()
+    document.removeEventListener("mouseup", this.stopMouse)
+    document.removeEventListener("mousemove", this.mouseDrag)
+    this.stopDrag()
+  }
+
+  mouseDrag = e => {
+    if (!this.state.dragging) return
+
+    e.preventDefault()
+    this.drag(e.screenX)
+  }
+
+  startTouch = e => {
+    if (this.state.dragging) return
+
+    if (document.activeElement) document.activeElement.blur()
+    document.addEventListener("touchend", this.stopTouch)
+    document.addEventListener("touchmove", this.touchDrag)
+    this.startDrag(e.touches[0].screenX)
+  }
+
+  stopTouch = e => {
+    if (!this.state.dragging || e.touches.length !== 0) return
+
+    document.removeEventListener("touchend", this.stopDragTouch)
+    document.removeEventListener("touchmove", this.dragTouch)
+    this.stopDrag()
+  }
+
+  touchDrag = e => {
+    if (!this.state.dragging) return
+
+    this.drag(e.touches[0].screenX)
   }
 
   render() {
     return (
       <PageContextConsumer>
-        {({ data: pageData, set: setPageData }) => (
+        {({ data: pageData }) => (
           <>
             <div
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                background: "#000",
-                opacity: 0.6 * this.activePercent,
-                transition: this.state.dragging ? "none" : "opacity 0.3s",
-                pointerEvents: pageData.sidebarActive ? "all" : "none",
-                outline: "none",
-              }}
+              ref={this.sidebarBack}
+              style={(() => {
+                let style = {
+                  position: "fixed",
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  background: "#000",
+                  transition: this.state.dragging ? "none" : "opacity 0.3s",
+                  pointerEvents: pageData.sidebarActive ? "all" : "none",
+                  outline: "none",
+                }
+                if (!this.state.dragging)
+                  style.opacity = pageData.sidebarActive ? 0.6 : 0
+                return style
+              })()}
               tabIndex="-1"
               role="button"
-              onMouseDown={e => {
-                if (e.button === 0) this.closeSidebar()
-              }}
+              onClick={this.closeSidebar}
+              onKeyDown={() => {}}
             >
               <></>
             </div>
             <div
-              style={{
-                width: 300,
-                height: "100vh",
-                position: "fixed",
-                left: -300,
-                top: 0,
-                background: "#202020",
-                boxShadow: `2px 0 6px rgba(0, 0, 0, ${
-                  0.5 * this.activePercent
-                })`,
-                transform: `translate(${this.activePercent * 100}%, 0)`,
-                transition: this.state.dragging
-                  ? "none"
-                  : "transform 0.3s, box-shadow 0.3s",
-                display: "grid",
-                gridTemplateRows: "auto 1fr",
-                overflowY: "hidden",
-              }}
+              ref={this.sidebar}
+              style={(() => {
+                let style = {
+                  width: 300,
+                  position: "fixed",
+                  top: 0,
+                  bottom: 0,
+                  right: -300,
+                  background: "#202020",
+                  transition: this.state.dragging
+                    ? "none"
+                    : "transform 0.3s, box-shadow 0.3s",
+                  display: "grid",
+                  gridTemplateRows: "auto 1fr",
+                  overflowY: "hidden",
+                }
+                if (!this.state.dragging) {
+                  style.boxShadow = `-2px 0 6px rgba(0, 0, 0, ${
+                    pageData.sidebarActive ? 0.5 : 0
+                  })`
+                  style.transform = `translate(-${
+                    pageData.sidebarActive ? 100 : 0
+                  }%, 0%)`
+                }
+                return style
+              })()}
             >
               <div
                 className="sidebar__header themed--back-sec"
@@ -466,17 +481,18 @@ class Sidebar extends Component {
             </div>
             <div
               style={{
-                position: "absolute",
-                left: 0,
+                position: "fixed",
                 top: 0,
-                width: 30,
-                height: "100%",
+                bottom: 0,
+                right: 0,
+                width: 15,
                 pointerEvents: pageData.blockView ? "none" : "all",
                 outline: "none",
               }}
               tabIndex="-1"
               role="button"
-              onMouseDown={this.startDrag}
+              onMouseDown={this.startMouse}
+              onTouchStart={this.startTouch}
             >
               <></>
             </div>

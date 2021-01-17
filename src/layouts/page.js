@@ -14,15 +14,13 @@ const Page = ({ title, children }) => (
       <div
         style={{
           width: "100%",
-          height: "100vh",
-          overflowY: pageData.blockView ? "hidden" : "auto",
         }}
       >
         <div
           id="body"
           style={{
-            position: "relative",
-            minHeight: "100%",
+            width: "100%",
+            minHeight: "100vh",
             display: "grid",
             gridTemplateRows: "auto 1fr auto",
           }}

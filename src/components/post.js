@@ -33,6 +33,7 @@ const Post = ({ post, author, authorImg, short = true, more = true }) => (
       }}
     >
       <div
+        className="author"
         style={{
           display: "flex",
           alignItems: "center",
@@ -42,7 +43,6 @@ const Post = ({ post, author, authorImg, short = true, more = true }) => (
           title={author.name.replace("_", " ")}
           alt={author.name.replace("_", " ")}
           style={{
-            marginRight: "0.75rem",
             borderRadius: "50%",
             overflow: "hidden",
             display: "block",
@@ -56,8 +56,8 @@ const Post = ({ post, author, authorImg, short = true, more = true }) => (
           fixed={authorImg}
         />
         <h2
+          className="author__name"
           style={{
-            margin: 0,
             color: "#f2f2f2",
             fontFamily: "open sans",
             fontWeight: "bold",
