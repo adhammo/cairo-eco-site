@@ -1,5 +1,9 @@
 const slides = [
   {
+    id: "visit57",
+    description: "Visit to 57357 hospital",
+  },
+  {
     id: "urban",
     description: "Urban vehicle",
   },
@@ -10,10 +14,6 @@ const slides = [
   {
     id: "participation",
     description: "Shell eco-marathon participation",
-  },
-  {
-    id: "inspection",
-    description: "Urban vehicle inspection",
   },
 ]
 

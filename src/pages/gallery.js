@@ -42,9 +42,9 @@ const HoverImage = ({ image, openPreview }) => (
     onClick={() => openPreview(image)}
   >
     <Img
-      title={images[image.category][image.id].description}
-      alt={images[image.category][image.id].description}
-      fluid={image.fluid}
+      title={images[image.category][image.id].tag}
+      alt={images[image.category][image.id].tag}
+      fluid={image.small}
       style={{
         width: "100%",
         flex: "1",
@@ -58,28 +58,34 @@ const HoverImage = ({ image, openPreview }) => (
         objectFit: "cover",
       }}
     />
-    <div
-      className="themed--back-var"
-      style={{
-        flex: "0 0 auto",
-        padding: "0.5rem",
-        boxSizing: "border-box",
-        transition: "background 0.2s",
-      }}
-    >
-      <p
-        className="themed--color"
-        style={{
-          fontFamily: "open sans",
-          fontSize: "0.75rem",
-          lineHeight: "1rem",
-          margin: 0,
-          transition: "color 0.2s",
-        }}
-      >
-        {images[image.category][image.id].description}
-      </p>
-    </div>
+    {(() => {
+      if (images[image.category][image.id].description) {
+        return (
+          <div
+            className="themed--back-var"
+            style={{
+              flex: "0 0 auto",
+              padding: "0.5rem",
+              boxSizing: "border-box",
+              transition: "background 0.2s",
+            }}
+          >
+            <p
+              className="themed--color"
+              style={{
+                fontFamily: "open sans",
+                fontSize: "0.75rem",
+                lineHeight: "1rem",
+                margin: 0,
+                transition: "color 0.2s",
+              }}
+            >
+              {images[image.category][image.id].description}
+            </p>
+          </div>
+        )
+      }
+    })()}
   </button>
 )
 
@@ -182,9 +188,16 @@ class GalleryPage extends Component {
             transition: "opacity 0.2s",
             outline: "none",
           }}
+          tabIndex={this.state.previewImage ? "0" : "-1"}
+          role="button"
+          onClick={this.closePreview}
+          onKeyDown={() => {}}
         >
           <div
             style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               width: "100%",
               height: "100%",
               padding: "1rem",
@@ -196,12 +209,13 @@ class GalleryPage extends Component {
                 alt={
                   images[this.state.previewImage.category][
                     this.state.previewImage.id
-                  ].description
+                  ].tag
                 }
-                fluid={this.state.previewImage.fluid}
+                fluid={this.state.previewImage.large}
                 style={{
                   width: "100%",
                   height: "100%",
+                  maxWidth: 1024,
                   userSelect: "none",
                 }}
                 imgStyle={{
@@ -229,8 +243,6 @@ class GalleryPage extends Component {
               overflow: "hidden",
               outline: "none",
             }}
-            tabIndex={this.state.previewImage ? "0" : "-1"}
-            onClick={this.closePreview}
           >
             <span className="material-icons">close</span>
           </button>
@@ -253,17 +265,22 @@ class GalleryPage extends Component {
               maxWidth: 1024,
             }}
           >
-            {Object.entries(this.props.categories).map(
-              ([category, categoryImgs], index) => (
+            {Object.entries(this.props.categories)
+              .sort(
+                ([category_a], [category_b]) =>
+                  Object.keys(categories).indexOf(category_a) -
+                  Object.keys(categories).indexOf(category_b)
+              )
+              .map(([category, categoryImgs], index) => (
                 <div className="category__section" key={index}>
                   <CategorySection
+                    order={index}
                     category={category}
                     categoryImgs={categoryImgs}
                     openPreview={this.openPreview}
                   />
                 </div>
-              )
-            )}
+              ))}
           </div>
         </section>
       </>
@@ -291,7 +308,10 @@ export default props => (
             name
             relativeDirectory
             childImageSharp {
-              fluid(maxWidth: 1024) {
+              small: fluid(maxWidth: 1024, quality: 30) {
+                ...GatsbyImageSharpFluid
+              }
+              large: fluid(maxWidth: 1024, quality: 70) {
                 ...GatsbyImageSharpFluid
               }
             }
@@ -308,8 +328,8 @@ export default props => (
           categories[category].push({
             id: node.name,
             category: category,
-            fixed: node.childImageSharp.fixed,
-            fluid: node.childImageSharp.fluid,
+            small: node.childImageSharp.small,
+            large: node.childImageSharp.large,
           })
           return categories
         }, {})}
