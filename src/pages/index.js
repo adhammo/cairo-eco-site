@@ -33,9 +33,9 @@ const HomePage = ({ logoImgs, homeImgs }) => (
           justifyContent: "center",
         }}
       >
-        <Fade bottom cascade>
-          {(() =>
-            logos.map((logo, index) => (
+        {(() => {
+          return logos.map((logo, index) => (
+            <Fade bottom cascade>
               <li
                 className="relations__logo"
                 key={index}
@@ -46,12 +46,7 @@ const HomePage = ({ logoImgs, homeImgs }) => (
               >
                 {(() => {
                   const LogoComponent = () => (
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
+                    <>
                       <Img
                         title={`${logo.name.replace("_", " ")} ${
                           logo.website ? "page" : "logo"
@@ -84,7 +79,7 @@ const HomePage = ({ logoImgs, homeImgs }) => (
                         <br />
                         {logo.name.split("_")[1]}
                       </h3>
-                    </div>
+                    </>
                   )
                   if (logo.website)
                     return (
@@ -95,6 +90,8 @@ const HomePage = ({ logoImgs, homeImgs }) => (
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{
+                          display: "flex",
+                          alignItems: "center",
                           textDecoration: "none",
                         }}
                         eventCategory="Relations"
@@ -104,11 +101,22 @@ const HomePage = ({ logoImgs, homeImgs }) => (
                         <LogoComponent />
                       </OutboundLink>
                     )
-                  else return <LogoComponent />
+                  else
+                    return (
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <LogoComponent />
+                      </div>
+                    )
                 })()}
               </li>
-            )))()}
-        </Fade>
+            </Fade>
+          ))
+        })()}
       </ul>
     </section>
     <section
