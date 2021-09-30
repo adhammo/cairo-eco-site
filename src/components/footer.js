@@ -104,7 +104,7 @@ const Footer = () => (
               userSelect: "none",
             }}
           >
-            &#169; 2020 Copyright,
+            &#169; 2021 Copyright,
           </span>
           <span style={{ fontWeight: "bold" }}>
             Cairo University Eco-Racing Team
