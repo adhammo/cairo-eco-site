@@ -2,6 +2,7 @@ import React from "react"
 import Fade from "react-reveal/Fade"
 import { StaticQuery, graphql } from "gatsby"
 import Img from "gatsby-image"
+import { OutboundLink } from "gatsby-plugin-google-analytics"
 
 import SlideShow from "../components/slideshow"
 import Section from "../components/section"
@@ -43,38 +44,68 @@ const HomePage = ({ logoImgs, homeImgs }) => (
                   listStyle: "none",
                 }}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Img
-                    title={`${logo.name.replace("_", " ")} logo`}
-                    alt={`${logo.name.replace("_", " ")} logo`}
-                    fixed={logoImgs[logo.id]}
-                    style={{
-                      userSelect: "none",
-                    }}
-                    imgStyle={{
-                      margin: 0,
-                    }}
-                  />
-                  <h3
-                    className="relations__logo__text"
-                    style={{
-                      color: "#f2f2f2",
-                      fontFamily: "open sans",
-                      fontWeight: "bold",
-                      opacity: 0.9,
-                      margin: "0 0 0 1rem",
-                    }}
-                  >
-                    {logo.name.split("_")[0]}
-                    <br />
-                    {logo.name.split("_")[1]}
-                  </h3>
-                </div>
+                {(() => {
+                  const LogoComponent = () => (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Img
+                        title={`${logo.name.replace("_", " ")} ${
+                          logo.website ? "page" : "logo"
+                        }`}
+                        alt={`${logo.name.replace("_", " ")} ${
+                          logo.website ? "page" : "logo"
+                        }`}
+                        fixed={logoImgs[logo.id]}
+                        style={{
+                          userSelect: "none",
+                        }}
+                        imgStyle={{
+                          margin: 0,
+                        }}
+                      />
+                      <h3
+                        title={`${logo.name.replace("_", " ")} ${
+                          logo.website ? "page" : "logo"
+                        }`}
+                        className="relations__logo__text"
+                        style={{
+                          color: "#f2f2f2",
+                          fontFamily: "open sans",
+                          fontWeight: "bold",
+                          opacity: 0.9,
+                          margin: "0 0 0 1rem",
+                        }}
+                      >
+                        {logo.name.split("_")[0]}
+                        <br />
+                        {logo.name.split("_")[1]}
+                      </h3>
+                    </div>
+                  )
+                  if (logo.website)
+                    return (
+                      <OutboundLink
+                        className="relations__logo__link"
+                        title={`${logo.name.replace("_", " ")} page`}
+                        href={logo.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          textDecoration: "none",
+                        }}
+                        eventCategory="Relations"
+                        eventAction="Outbound link to relations website"
+                        eventLabel={logo.name.replace("_", " ")}
+                      >
+                        <LogoComponent />
+                      </OutboundLink>
+                    )
+                  else return <LogoComponent />
+                })()}
               </li>
             )))()}
         </Fade>

@@ -7,6 +7,11 @@ const logos = [
     id: "shell",
     name: "Shell_Eco-marathon",
   },
+  {
+    id: "easy-composites",
+    name: "Easy_Composites",
+    website: "https://www.easycomposites.co.uk/",
+  },
 ]
 
 export default logos
